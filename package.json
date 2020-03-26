@@ -1,0 +1,38 @@
+{
+  "name": "mobx-react-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack-dev-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lsert/mobx-react-test.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lsert/mobx-react-test/issues"
+  },
+  "homepage": "https://github.com/lsert/mobx-react-test#readme",
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-transform-typescript": "^7.9.4",
+    "@babel/preset-react": "^7.9.4",
+    "@babel/preset-typescript": "^7.9.0",
+    "@types/react": "^16.9.25",
+    "babel-loader": "^8.1.0",
+    "html-webpack-plugin": "^4.0.1",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "mobx": "^5.15.4",
+    "mobx-react": "^6.1.8",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "webpack-dev-server": "^3.10.3"
+  }
+}
