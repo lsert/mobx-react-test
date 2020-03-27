@@ -11,9 +11,16 @@ module.exports = {
     publicPath: '/',
   },
   devServer: {
-    overlay: true,
     index: '/index.html',
     publicPath: '/',
+    proxy: {
+      '/api/pc': {
+        target: 'http://5400-za-pi-bops.test.za.biz',
+        pathRewrite: { '^/api/pc': '' },
+        logLevel: 'debug',
+        changeOrigin: true,
+      }
+    }
   },
   module: {
     rules: [

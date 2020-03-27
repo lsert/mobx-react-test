@@ -3,6 +3,7 @@
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
     "baseUrl":".",
+    "strict": true,
     "paths": {
       "components/*": ["./components/*"]
     }
