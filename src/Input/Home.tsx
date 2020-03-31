@@ -1,8 +1,9 @@
-import React, { memo, useEffect, useState, ChangeEvent, MouseEvent } from 'react';
+import React, { memo, useEffect, useState, ChangeEvent, MouseEvent, useCallback } from 'react';
 import { useLocalStore, useObserver, Observer, observer } from 'mobx-react';
 import { Input } from 'components/input';
 import { Button } from 'components/button';
-console.log(Button);
+
+import { Calendar } from 'components/calendar';
 
 function List(props) {
   const { index, item, onChange, remove } = props;
@@ -16,8 +17,16 @@ function List(props) {
 
 const InputCps = observer(List);
 
+function A(props) {
+  return <div style={{ marginTop: 10 }}>
+    <Input value={props.planFullName} />
+    <Button style={{ marginLeft: 10 }} data-index={props.index} onClick={props.deletePlan}>删除</Button>
+  </div>
+}
+
+const Ax = observer(A);
+
 export function Home() {
-  const [value, setValue] = useState('');
   const pageData = useLocalStore(() => {
     return {
       data: undefined,
@@ -42,6 +51,7 @@ export function Home() {
       }
     }
   });
+
   useEffect(() => {
     fetch('/api/pc/api/stepPage/query?currentStepCode=baseInfo&mainId=1')
       .then((res) => {
@@ -70,16 +80,15 @@ export function Home() {
         <br />
         {
           data.planList.map((item, index) => {
-            return <div>
-              <Input value={item.planFullName} />
-              <Button data-index={index} onClick={pageData.deletePlan}>删除</Button>
-            </div>
+            return <Ax index={index} planFullName={item.planFullName} deletePlan={pageData.deletePlan} />
           })
         }
-        <br />
-        产品
-        <br />
         <Button onClick={pageData.addPlanList}>点击我</Button>
+
+        <br />
+        <br />
+        <br />
+        <Calendar value="2020-01-02" />
       </div>
     )
   });

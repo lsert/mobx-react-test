@@ -1,0 +1,55 @@
+.ls-calendar {
+  padding: 10px;
+  border:1px solid #ccc;
+  display: inline-block;
+  border-radius: 3px;
+  font-size: 14px;
+
+  .panel-box {
+    min-height: 210px;
+  }
+
+  .current-date-box {
+    text-align: center;
+  }
+
+  .opt-btn-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .flip-btn {
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .current-date-box {
+    font-size: 14px;
+    color: #333;
+  }
+}
+
+.ls-panel-item {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  font-size: 12px;
+  margin-left: 5px;
+  vertical-align: middle;
+  margin-top: 5px;
+  cursor: pointer;
+  box-sizing: border-box;
+  border-radius: 50%;
+  user-select: none;
+
+  &.invalid-item {
+    cursor: auto;
+  }
+
+  &.actived {
+    background-color: #35a0e6;
+    color: #fff;
+  }
+}
