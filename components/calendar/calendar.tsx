@@ -1,6 +1,7 @@
 import React, { HTMLAttributes, MouseEvent, useCallback, useState } from 'react';
 import classnames from 'classnames';
 import { isSameDay, splitMonthList, getFullMonthDate, fillMonthListWithWeek, formatDate, isValidDate } from './tools';
+import { TimePanel } from './timePanel';
 
 interface PropsIF extends HTMLAttributes<HTMLDivElement> {
   value?: string,
@@ -20,6 +21,8 @@ const weekList = [
   ['Friday', 'Fri'],
   ['Saturday', 'Sat'],
 ];
+
+
 
 function MonthPanel(props: MonthPanelPropsIF) {
   const { className, value, onDateChange } = props;
@@ -141,15 +144,17 @@ export function Calendar(props: PropsIF) {
   });
   const [time, setTime] = useState('');
   return (
-    <div>
-      <MonthPanel
+    <div className={cls}>
+      {/* <MonthPanel
         className={cls}
         value={time}
         onDateChange={(_e, _date, dateStr) => {
           console.log(dateStr)
           setTime(dateStr);
         }}
-      />
+      /> */}
+
+      <TimePanel />
     </div>
   )
 }

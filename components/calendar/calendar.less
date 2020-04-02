@@ -6,7 +6,7 @@
   font-size: 14px;
 
   .panel-box {
-    min-height: 210px;
+    min-height: 200px;
   }
 
   .current-date-box {
@@ -31,10 +31,10 @@
 
 .ls-panel-item {
   display: inline-block;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   text-align: center;
-  line-height: 30px;
+  line-height: 28px;
   font-size: 12px;
   margin-left: 5px;
   vertical-align: middle;
@@ -51,5 +51,49 @@
   &.actived {
     background-color: #35a0e6;
     color: #fff;
+  }
+}
+
+@PanelR : 200;
+@PanelA : 30deg;
+
+ // 时间选择器
+ .ls-time-panel {
+  position: relative;
+  .circle-box-inner {
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    background-color: yellowgreen;
+    position: relative;
+
+    .time-icon-box {
+      position: absolute;
+      top:0;
+      left: 0;
+      transform: translate(-50%, -50%);
+    }
+
+
+  
+    .loop(@n, @i:1) when( @i <= @n) {
+      .time-icon-box-@{i} {
+        left: sin(@i * @PanelA) * 100 + 100px;
+        top: (1 - sin(90 - @i * @PanelA)) * 100px;
+      }
+    }
+
+    each(range(12),{
+      .time-icon-box:nth-child(@{value}) {
+        left: sin(@value * @PanelA) * 100 + 100px;
+        top: (1 - sin(90 - @value * @PanelA)) * 100px;
+      }
+    })
+  }
+
+  .move-btn {
+    width: 30px;
+    height: 30px;
+    background-color: blue;
   }
 }

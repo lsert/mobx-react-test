@@ -52,42 +52,9 @@ export function Home() {
     }
   });
 
-  useEffect(() => {
-    fetch('/api/pc/api/stepPage/query?currentStepCode=baseInfo&mainId=1')
-      .then((res) => {
-        return res.json();
-      })
-      .then((result) => {
-        return result.result;
-      })
-      .then((result) => {
-        pageData.data = result;
-      })
-  }, []);
   return useObserver(() => {
-    const { data } = pageData;
-    if (!data) {
-      return null;
-    }
     return (
-      <div>
-        <br />
-        <Input
-          value={data.projectContext}
-          className="test-input"
-          onChange={pageData.onValueChange}
-        />
-        <br />
-        {
-          data.planList.map((item, index) => {
-            return <Ax index={index} planFullName={item.planFullName} deletePlan={pageData.deletePlan} />
-          })
-        }
-        <Button onClick={pageData.addPlanList}>点击我</Button>
-
-        <br />
-        <br />
-        <br />
+      <div style={{ margin: '30px auto', width: '30%' }}>
         <Calendar value="2020-01-02" />
       </div>
     )
