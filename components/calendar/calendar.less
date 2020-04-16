@@ -1,9 +1,8 @@
-.ls-calendar {
+.zw-calendar {
   padding: 10px;
-  border:1px solid #ccc;
   display: inline-block;
-  border-radius: 3px;
   font-size: 14px;
+  box-shadow: 0px 2px 5px 2px rgba(0, 0, 0, 0.1);
 
   .panel-box {
     min-height: 200px;
@@ -16,8 +15,9 @@
   .opt-btn-box {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
   }
+
   .flip-btn {
     display: inline-block;
     cursor: pointer;
@@ -29,71 +29,140 @@
   }
 }
 
-.ls-panel-item {
+.zw-panel-item {
   display: inline-block;
-  width: 28px;
-  height: 28px;
   text-align: center;
-  line-height: 28px;
   font-size: 12px;
-  margin-left: 5px;
   vertical-align: middle;
   margin-top: 5px;
   cursor: pointer;
-  box-sizing: border-box;
-  border-radius: 50%;
   user-select: none;
+  padding: 3px;
+
+  .zw-panel-content {
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+  }
+
+  &.not-current-month {
+    .zw-panel-content {
+      color: #bcbcbc;
+    }
+  }
+
+  &:hover {
+    .zw-panel-content {
+      background-color: #e8f7f0;
+    }
+  }
+
+  &.disabled {
+    background-color: #f2f2f2;
+    border-radius: 50% 0 0 50%;
+    background-color: #00BC70;
+  }
+
+  & + .disabled {
+    background-color: #00BC70;
+    border-radius: 0;
+  }
+
+
+  // &.disabled + .not-disabled{
+  //   border-radius: 0 50% 50% 0;
+  //   background-color: red;
+  // }
+
+
+  &.today {
+    .zw-panel-content {
+      border: 1px solid #00BC70;
+      box-sizing: border-box;
+    }
+  }
 
   &.invalid-item {
     cursor: auto;
   }
 
   &.actived {
-    background-color: #35a0e6;
-    color: #fff;
+    .zw-panel-content {
+      background-color: #00BC70;
+      color: #fff;
+    }
   }
 }
 
 @PanelR : 200;
 @PanelA : 30deg;
 
- // 时间选择器
- .ls-time-panel {
+// 时间选择器
+.ls-time-panel {
   position: relative;
+
+  .circle-box {
+    position: relative;
+  }
   .circle-box-inner {
     height: 200px;
     width: 200px;
+    left: -100px;
+    top: -100px;
     border-radius: 50%;
     background-color: yellowgreen;
-    position: relative;
+    position: absolute;
 
     .time-icon-box {
       position: absolute;
-      top:0;
+      top: 0;
       left: 0;
       transform: translate(-50%, -50%);
     }
 
 
-  
-    .loop(@n, @i:1) when( @i <= @n) {
+
+    .loop(@n, @i: 1) when(@i <=@n) {
       .time-icon-box-@{i} {
         left: sin(@i * @PanelA) * 100 + 100px;
         top: (1 - sin(90 - @i * @PanelA)) * 100px;
       }
     }
 
-    each(range(12),{
-      .time-icon-box:nth-child(@{value}) {
-        left: sin(@value * @PanelA) * 100 + 100px;
-        top: (1 - sin(90 - @value * @PanelA)) * 100px;
+    each(range(12), {
+        .time-icon-box:nth-child(@{value}) {
+          left: sin(@value * @PanelA) * 100 + 100px;
+          top: (1 - sin(90 - @value * @PanelA)) * 100px;
+        }
       }
-    })
+
+    )
   }
 
   .move-btn {
     width: 30px;
     height: 30px;
     background-color: blue;
+    position: absolute;
+    top:  0;
+    left: 0;
+    margin-top: -15px;
+    margin-left: -15px;
+    z-index: 2;
+    border-radius: 50%;
+  }
+
+  .rotate-line {
+    position: absolute;
+    content: '';
+    display: block;
+    position: absolute;
+    height: 2px;
+    width: 100px;
+    background-color: red;
+    top: 50%;
+    left: 50%;
+    transform-origin: left center;
   }
 }

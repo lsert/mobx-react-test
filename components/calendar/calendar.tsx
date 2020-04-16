@@ -1,14 +1,18 @@
 import React, { HTMLAttributes, MouseEvent, useCallback, useState } from 'react';
 import classnames from 'classnames';
-import { isSameDay, splitMonthList, getFullMonthDate, fillMonthListWithWeek, formatDate, isValidDate } from './tools';
+import { isSameDay, splitMonthList, getFullMonthDate, fillMonthListWithWeek, formatDate, isValidDate, isSameMonth, DateCaculate } from './tools';
 import { TimePanel } from './timePanel';
 
 interface PropsIF extends HTMLAttributes<HTMLDivElement> {
   value?: string,
+  minValue?: string;
+  maxValue?: string;
 }
 
 interface MonthPanelPropsIF extends HTMLAttributes<HTMLDivElement> {
   value?: string;
+  minValue?: string;
+  maxValue?: string;
   onDateChange?: (e: MouseEvent<HTMLDivElement>, date: Date, dateStr: string) => void;
 }
 
@@ -22,26 +26,36 @@ const weekList = [
   ['Saturday', 'Sat'],
 ];
 
-
-
 function MonthPanel(props: MonthPanelPropsIF) {
-  const { className, value, onDateChange } = props;
-  const dateObj = value ? new Date(value) : new Date();
+  const { className, value, onDateChange, minValue } = props;
+  const today = new DateCaculate();
+  const dateObj = new DateCaculate(value);
+  const dataValid = isValidDate(dateObj);
   const cls = classnames({
     'ls-month-panel': true,
     [`${className}`]: !!className,
   });
 
-  const [currentMonthDate, setCurrentMonthDate] = useState(dateObj);
+  // 当前月
+  const [currentMonthDate, setCurrentMonthDate] = useState(dataValid ? dateObj : today);
   const monthList = getFullMonthDate(currentMonthDate);
   const filledMonthList = fillMonthListWithWeek(monthList);
   const splitedFillMonthList = splitMonthList(filledMonthList);
 
-  const onPanelClick = useCallback((e: MouseEvent<HTMLDivElement>) => {
+  const minValueDate = new Date(minValue);
+  const minValueDisableRange = filledMonthList.filter((item) => {
+    return item.getTime() < minValueDate.getTime();
+  });
+  console.log(minValueDisableRange, minValueDate);
+  const onItemClick = useCallback((e: MouseEvent<HTMLDivElement>) => {
     let { index, index2 } = e.currentTarget.dataset;
     if (onDateChange) {
       const value = splitedFillMonthList[Number(index)][Number(index2)];
+      if (minValueDisableRange.includes(value)) {
+        return;
+      }
       if (isValidDate(value)) {
+        setCurrentMonthDate(value);
         onDateChange(
           e,
           value,
@@ -90,10 +104,17 @@ function MonthPanel(props: MonthPanelPropsIF) {
 
   return (
     <div className={cls}>
-      <div className="current-date-box">{currentMonthDate.getMonth() + 1}月 {currentMonthDate.getFullYear()}</div>
+      <div className="current-date-box">
+        <div className="flip-btn">&lt;&lt;</div>
+        <div className="flip-btn" onClick={prevMonth}>&lt;</div>
+        {currentMonthDate.getFullYear()}年 {currentMonthDate.getMonth() + 1}月
+        <div className="flip-btn" onClick={nextMonth}>&gt;</div>
+        <div className="flip-btn" onClick={nextMonth}>&gt;&gt;</div>
+        <div></div>
+      </div>
       {
         weekList.map(([item, shortItem]) => {
-          return <div className="ls-panel-item">{shortItem}</div>
+          return <div className="zw-panel-item">{shortItem}</div>
         })
       }
       <div className="panel-box">
@@ -105,18 +126,24 @@ function MonthPanel(props: MonthPanelPropsIF) {
                   itemList.map((item, index2) => {
                     const currentDate = item.getDate();
                     const actived = isSameDay(dateObj, item);
+                    const disabled = minValueDisableRange.includes(item);
                     const panelItemCls = classnames({
-                      'ls-panel-item': true,
-                      'invalid-item': !currentDate,
+                      'zw-panel-item': true,
+                      'disabled': minValueDisableRange.includes(item),
+                      'not-disabled': !disabled,
                       'actived': actived,
+                      'not-current-month': !isSameMonth(currentMonthDate, item),
+                      'today': isSameDay(new Date(), item),
                     });
                     return (
-                      <div
-                        data-index={index}
-                        data-index2={index2}
-                        className={panelItemCls}
-                        onClick={onPanelClick}>
-                        {currentDate || ''}
+                      <div className={panelItemCls}>
+                        <div
+                          className="zw-panel-content"
+                          data-index={index}
+                          data-index2={index2}
+                          onClick={onItemClick}>
+                          {currentDate || ''}
+                        </div>
                       </div>
                     )
                   })
@@ -127,34 +154,25 @@ function MonthPanel(props: MonthPanelPropsIF) {
         }
       </div>
       <div className="opt-btn-box">
-        <div className="flip-btn" onClick={prevMonth}>上月</div>
-        <div className="current-date-box">{formatDate(dateObj, 'yyyy-MM-dd')}</div>
-        <div className="today-btn flip-btn" onClick={toToday}>○</div>
-        <div className="flip-btn" onClick={nextMonth}>下月</div>
+        <div className="today-btn flip-btn" onClick={toToday}>今天</div>
       </div>
     </div >
   )
 }
 
 export function Calendar(props: PropsIF) {
-  const { className, value } = props;
-  const cls = classnames({
-    'ls-calendar': true,
-    [`${className}`]: !!className,
-  });
+  const { className, value, minValue } = props;
+  const cls = classnames('zw-calendar', className);
   const [time, setTime] = useState('');
   return (
     <div className={cls}>
-      {/* <MonthPanel
-        className={cls}
+      <MonthPanel
         value={time}
+        minValue={minValue}
         onDateChange={(_e, _date, dateStr) => {
-          console.log(dateStr)
           setTime(dateStr);
         }}
-      /> */}
-
-      <TimePanel />
+      />
     </div>
   )
 }

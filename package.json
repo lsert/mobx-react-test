@@ -25,6 +25,7 @@
     "@types/classnames": "^2.2.10",
     "@types/react": "^16.9.25",
     "babel-loader": "^8.1.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "css-loader": "^3.4.2",
     "html-webpack-plugin": "^4.0.1",
     "less": "^3.11.1",

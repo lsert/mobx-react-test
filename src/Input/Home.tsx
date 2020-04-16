@@ -1,4 +1,5 @@
-import React, { memo, useEffect, useState, ChangeEvent, MouseEvent, useCallback } from 'react';
+import React, { memo, useEffect, useState, ChangeEvent, MouseEvent, useCallback, useContext } from 'react';
+import ReactDOM from 'react-dom';
 import { useLocalStore, useObserver, Observer, observer } from 'mobx-react';
 import { Input } from 'components/input';
 import { Button } from 'components/button';
@@ -23,8 +24,6 @@ function A(props) {
     <Button style={{ marginLeft: 10 }} data-index={props.index} onClick={props.deletePlan}>删除</Button>
   </div>
 }
-
-const Ax = observer(A);
 
 export function Home() {
   const pageData = useLocalStore(() => {
@@ -54,10 +53,9 @@ export function Home() {
 
   return useObserver(() => {
     return (
-      <div style={{ margin: '30px auto', width: '30%' }}>
-        <Calendar value="2020-01-02" />
+      <div style={{ margin: 50 }}>
+        <Calendar minValue="2020-04-01" />
       </div>
     )
   });
 }
-

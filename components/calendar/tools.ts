@@ -1,3 +1,25 @@
+export class DateCaculate extends Date {
+  year = this.getFullYear();
+  month = this.getMonth() + 1;
+  day = this.getDate();
+  week = this.getDay();
+
+  addYear(number = 1) {
+    const { year, month, day, week } = this;
+    let newYear = year + number;
+    return new DateCaculate(newYear, month, day);
+  }
+
+  addMonth(number = 1) {
+    const { year, month, day, week } = this;
+    const plusYear = Math.floor(number / 12);
+    const plusMonth = number % 12;
+    const newYear = year + plusYear;
+    const newMonth = month + plusMonth;
+    return new DateCaculate(newYear, newMonth - 1, day);
+  }
+}
+
 export function isSameDay(date: Date, date2: Date) {
   const year = date.getFullYear();
   const year2 = date2.getFullYear();
@@ -12,6 +34,17 @@ export function isSameDay(date: Date, date2: Date) {
   const day = date.getDate();
   const day2 = date2.getDate();
   return day === day2;
+}
+
+export function isSameMonth(date: Date, date2: Date) {
+  const year = date.getFullYear();
+  const year2 = date2.getFullYear();
+  if (year !== year2) {
+    return false;
+  }
+  const month = date.getMonth() + 1;
+  const month2 = date2.getMonth() + 1;
+  return month === month2;
 }
 
 export function getFullMonthDate(date: Date) {
@@ -34,12 +67,12 @@ export function fillMonthListWithWeek(dateList: Date[]) {
   const startWeek = startDate.getDay();
   const newDateList = dateList.slice();
   for (let i = 0; i < startWeek; i++) {
-    newDateList.unshift(new Date(''));
+    newDateList.unshift(new Date(newDateList[0].getTime() - 86400000));
   }
   const endDate = dateList[dateList.length - 1];
   const endWeek = endDate.getDay();
   for (let i = 0; i < (6 - endWeek); i++) {
-    newDateList.push(new Date(''));
+    newDateList.push(new Date(newDateList[newDateList.length - 1].getTime() + 86400000));
   }
   return newDateList;
 }

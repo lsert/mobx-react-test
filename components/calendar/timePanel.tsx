@@ -6,7 +6,28 @@ interface PropsIF extends HTMLAttributes<HTMLDivElement> {
   onDateChange?: () => void;
 }
 
+function degree2Radian(deg: number) {
+  return Math.PI / 180 * deg;
+}
 
+function radian2Degree(rad: number) {
+  return 180 / Math.PI * rad;
+}
+
+function sin(deg: number) {
+  return Math.sin(degree2Radian(deg));
+}
+
+function asin(r: number) {
+  return radian2Degree(Math.asin(r));
+}
+
+function getPosition(x: number, y: number, originX: number = 0, originY: number = 0) {
+  let k = y / x;
+  let a = Math.sqrt(10000 / (k ** 2 + 1));
+  let b = k * a;
+  return [a, b];
+}
 function getClientPosition(elem: HTMLElement) {
   let par = elem;
   let left = 0;
@@ -38,6 +59,7 @@ export function TimePanel(props: PropsIF) {
 
   const boxRef = useRef<null | HTMLDivElement>(null);
   const btnRef = useRef<null | HTMLDivElement>(null);
+  const rowRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
     document.addEventListener('mousemove', function (e) {
@@ -49,22 +71,19 @@ export function TimePanel(props: PropsIF) {
         const btnHeight = btnRef.current.offsetHeight;
         const btnWidth = btnRef.current.offsetHeight;
         const { left, top } = getClientPosition(boxRef.current);
-        let x = Math.round(clientX - left);
-        let y = Math.round(clientY - top);
-        x = Math.max(0, x);
-        y = Math.max(0, y);
-        x = Math.min(x, 200);
-        y = Math.min(y, 200);
-        let maxX = Math.sqrt(10000 - Math.pow((y - 100), 2)) + 100;
-        if (x > maxX) {
-          x = maxX;
+        let x = clientX - left;
+        let y = clientY - top;
+        let [a, b] = getPosition(Math.abs(x), Math.abs(y));
+        let row = radian2Degree(Math.asin(y / Math.sqrt(x ** 2 + y ** 2)));
+        if (x < 0) {
+          a = -a;
+          row = 180 - row;
         }
-        let maxY = Math.sqrt(10000 - Math.pow((x - 100), 2)) + 100;
-        if (y > maxY) {
-          y = maxY;
+        if (y < 0) {
+          b = -b;
         }
-
-        btnRef.current.style.setProperty('transform', `translate(${x}px, ${y}px)`);
+        btnRef.current.style.setProperty('transform', `translate(${a}px, ${b}px)`);
+        rowRef.current.style.setProperty('transform', `rotate(${row}deg)`);
       }
     });
   }, []);
@@ -78,9 +97,10 @@ export function TimePanel(props: PropsIF) {
               return <span className="time-icon-box">{item}</span>
             })
           }
-          <div className="move-btn" ref={btnRef}>
-          </div>
         </div>
+        <div className="move-btn" ref={btnRef}>
+        </div>
+        <div className="rotate-line" ref={rowRef}></div>
       </div>
     </div>
   )
