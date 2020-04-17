@@ -4,8 +4,136 @@
   font-size: 14px;
   box-shadow: 0px 2px 5px 2px rgba(0, 0, 0, 0.1);
 
+  .zw-panel-item {
+    width: 34px;
+    height: 34px;
+    display: inline-block;
+    text-align: center;
+    line-height: 34px;
+  }
+
   .panel-box {
-    min-height: 200px;
+    min-height: 245px;
+
+    .zw-panel-item {
+      display: inline-block;
+      height: auto;
+      width: auto;
+      font-size: 12px;
+      vertical-align: middle;
+      cursor: pointer;
+      user-select: none;
+      padding: 3px;
+      box-sizing: border-box;
+      position: relative;
+      height: 35px;
+      width: 35px;
+
+      &.hovered {
+        &::after{
+          content: "";
+          display: block;
+          position: absolute;
+          left: 0px;
+          top: 0;
+          height: calc(100% - 2px);
+          width:  calc(100% - 1px);
+          border-top: 1px dashed #00BC70;
+          border-bottom: 1px dashed #00BC70;
+        }
+
+        &.hover-end {
+          &::after{
+            border-right: 1px dashed #00BC70;
+          }
+        }
+        &:last-child {
+          &::after{
+            border-right: 1px dashed #00BC70;
+          }
+        }
+        &:first-child {
+          &::after{
+            border-left: 1px dashed #00BC70;
+          }
+        }
+      }
+
+      &.disabled {
+        background-color: #F2F2F2;
+        border-top-left-radius: 50%;
+        border-bottom-left-radius: 50%;
+        color: #bcbcbc;
+        cursor: auto;
+
+        +.disabled {
+          background-color: #F2F2F2;
+          border-radius: 0;
+        }
+
+        &:last-of-type {
+          border-top-right-radius: 50%;
+          border-bottom-right-radius: 50%;
+        }
+
+        &:hover {
+          color: #bcbcbc;
+          background-color: #F2F2F2;
+        }
+      }
+
+      &.disabled.range-end {
+        border-top-right-radius: 50%;
+        border-bottom-right-radius: 50%;
+      }
+
+      .zw-panel-content {
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        line-height: 28px;
+      }
+
+      &.not-current-month {
+        .zw-panel-content {
+          color: #bcbcbc;
+        }
+      }
+
+      &:hover {
+        .zw-panel-content {
+          background-color: #e8f7f0;
+        }
+      }
+
+      &.disabled:hover {
+        .zw-panel-content {
+          background-color: #f2f2f2;
+        }
+      }
+
+      &.today {
+        .zw-panel-content {
+          border: 1px solid #00BC70;
+          box-sizing: border-box;
+        }
+      }
+
+      &.invalid-item {
+        cursor: auto;
+      }
+
+      &.actived {
+        &.hovered {
+          border-left: 1px dashed #00BC70;
+        }
+
+        .zw-panel-content {
+          background-color: #00BC70;
+          color: #fff;
+        }
+      }
+    }
   }
 
   .current-date-box {
@@ -29,72 +157,6 @@
   }
 }
 
-.zw-panel-item {
-  display: inline-block;
-  text-align: center;
-  font-size: 12px;
-  vertical-align: middle;
-  margin-top: 5px;
-  cursor: pointer;
-  user-select: none;
-  padding: 3px;
-
-  .zw-panel-content {
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    line-height: 28px;
-  }
-
-  &.not-current-month {
-    .zw-panel-content {
-      color: #bcbcbc;
-    }
-  }
-
-  &:hover {
-    .zw-panel-content {
-      background-color: #e8f7f0;
-    }
-  }
-
-  &.disabled {
-    background-color: #f2f2f2;
-    border-radius: 50% 0 0 50%;
-    background-color: #00BC70;
-  }
-
-  & + .disabled {
-    background-color: #00BC70;
-    border-radius: 0;
-  }
-
-
-  // &.disabled + .not-disabled{
-  //   border-radius: 0 50% 50% 0;
-  //   background-color: red;
-  // }
-
-
-  &.today {
-    .zw-panel-content {
-      border: 1px solid #00BC70;
-      box-sizing: border-box;
-    }
-  }
-
-  &.invalid-item {
-    cursor: auto;
-  }
-
-  &.actived {
-    .zw-panel-content {
-      background-color: #00BC70;
-      color: #fff;
-    }
-  }
-}
-
 @PanelR : 200;
 @PanelA : 30deg;
 
@@ -105,6 +167,7 @@
   .circle-box {
     position: relative;
   }
+
   .circle-box-inner {
     height: 200px;
     width: 200px;
@@ -145,7 +208,7 @@
     height: 30px;
     background-color: blue;
     position: absolute;
-    top:  0;
+    top: 0;
     left: 0;
     margin-top: -15px;
     margin-left: -15px;

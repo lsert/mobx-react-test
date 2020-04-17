@@ -18,6 +18,23 @@ export class DateCaculate extends Date {
     const newMonth = month + plusMonth;
     return new DateCaculate(newYear, newMonth - 1, day);
   }
+
+  addDay(number = 1) {
+    const ts = this.getTime();
+    let newTs = ts + (number * 86400000);
+    return new DateCaculate(newTs);
+  }
+
+  isSameDay(date: DateCaculate) {
+    return this.year === date.year && this.month === date.month && this.day === date.day;
+  }
+
+  isNextSiblings(date: DateCaculate) {
+    return this.isSameDay(date.addDay(-1));
+  }
+  isPrevSiblings(date: DateCaculate) {
+    return this.isSameDay(date.addDay());
+  }
 }
 
 export function isSameDay(date: Date, date2: Date) {

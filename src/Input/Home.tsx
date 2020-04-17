@@ -54,7 +54,7 @@ export function Home() {
   return useObserver(() => {
     return (
       <div style={{ margin: 50 }}>
-        <Calendar minValue="2020-04-01" />
+        <Calendar minValue="2020-04-01" maxValue="2020-04-20" />
       </div>
     )
   });

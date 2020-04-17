@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, MouseEvent, useCallback, useState } from 'react';
+import React, { HTMLAttributes, MouseEvent, useCallback, useState, useReducer } from 'react';
 import classnames from 'classnames';
 import { isSameDay, splitMonthList, getFullMonthDate, fillMonthListWithWeek, formatDate, isValidDate, isSameMonth, DateCaculate } from './tools';
 import { TimePanel } from './timePanel';
@@ -27,7 +27,9 @@ const weekList = [
 ];
 
 function MonthPanel(props: MonthPanelPropsIF) {
-  const { className, value, onDateChange, minValue } = props;
+  const { className, value, onDateChange, minValue, maxValue } = props;
+
+  // 今天的时间
   const today = new DateCaculate();
   const dateObj = new DateCaculate(value);
   const dataValid = isValidDate(dateObj);
@@ -38,22 +40,34 @@ function MonthPanel(props: MonthPanelPropsIF) {
 
   // 当前月
   const [currentMonthDate, setCurrentMonthDate] = useState(dataValid ? dateObj : today);
+  const [hoverRange, setHoverRange] = useState<DateCaculate[]>([]);
   const monthList = getFullMonthDate(currentMonthDate);
-  const filledMonthList = fillMonthListWithWeek(monthList);
+  const filledMonthList = fillMonthListWithWeek(monthList).map((item) => {
+    return new DateCaculate(item);
+  });
   const splitedFillMonthList = splitMonthList(filledMonthList);
-
   const minValueDate = new Date(minValue);
   const minValueDisableRange = filledMonthList.filter((item) => {
     return item.getTime() < minValueDate.getTime();
   });
-  console.log(minValueDisableRange, minValueDate);
-  const onItemClick = useCallback((e: MouseEvent<HTMLDivElement>) => {
-    let { index, index2 } = e.currentTarget.dataset;
+  const maxValueDate = new DateCaculate(maxValue);
+  const maxValueDisableRange = filledMonthList.filter((item) => {
+    return item.getTime() > maxValueDate.getTime();
+  });
+  const disabledRange = [...minValueDisableRange, ...maxValueDisableRange];
+  disabledRange.forEach((item, index) => {
+    if (index === disabledRange.length - 1) {
+      item.rangeEnd = true;
+      return;
+    }
+    if (!item.isNextSiblings(disabledRange[index + 1])) {
+      item.rangeEnd = true;
+    }
+  });
+
+  const onItemClick = useCallback((e: MouseEvent<HTMLDivElement>, index: number, index2: number) => {
     if (onDateChange) {
-      const value = splitedFillMonthList[Number(index)][Number(index2)];
-      if (minValueDisableRange.includes(value)) {
-        return;
-      }
+      const value = splitedFillMonthList[index][index2];
       if (isValidDate(value)) {
         setCurrentMonthDate(value);
         onDateChange(
@@ -126,22 +140,51 @@ function MonthPanel(props: MonthPanelPropsIF) {
                   itemList.map((item, index2) => {
                     const currentDate = item.getDate();
                     const actived = isSameDay(dateObj, item);
-                    const disabled = minValueDisableRange.includes(item);
+                    const disabled = disabledRange.includes(item);
+                    let hovered = false;
+                    let hoverEnd = false;
+                    if (hoverRange.length === 2) {
+                      const [startDate, endDate] = hoverRange;
+                      hovered = (item.getTime() < endDate.getTime() && item.getTime() > startDate.getTime())
+                        || startDate.isSameDay(item) || endDate.isSameDay(item);
+                      hoverEnd = endDate.isSameDay(item);
+                    }
                     const panelItemCls = classnames({
                       'zw-panel-item': true,
-                      'disabled': minValueDisableRange.includes(item),
-                      'not-disabled': !disabled,
+                      'disabled': disabled,
                       'actived': actived,
+                      'range-end': !!item.rangeEnd,
                       'not-current-month': !isSameMonth(currentMonthDate, item),
                       'today': isSameDay(new Date(), item),
+                      'hovered': hovered,
+                      'hover-end': hoverEnd
                     });
                     return (
-                      <div className={panelItemCls}>
-                        <div
-                          className="zw-panel-content"
-                          data-index={index}
-                          data-index2={index2}
-                          onClick={onItemClick}>
+                      <div
+                        className={panelItemCls}
+                        data-index={index}
+                        data-index2={index2}
+                        onClick={(e) => {
+                          if (disabled) {
+                            return;
+                          }
+                          onItemClick(e, index, index2);
+                        }}
+                        onMouseEnter={() => {
+                          if (disabled) {
+                            return;
+                          }
+                          if (dateObj && isValidDate(dateObj)) {
+                            if (item.getTime() > dateObj.getTime()) {
+                              setHoverRange([dateObj, item]);
+                            }
+                          }
+                        }}
+                        onMouseLeave={() => {
+                          setHoverRange([]);
+                        }}
+                      >
+                        <div className="zw-panel-content">
                           {currentDate || ''}
                         </div>
                       </div>
@@ -161,7 +204,7 @@ function MonthPanel(props: MonthPanelPropsIF) {
 }
 
 export function Calendar(props: PropsIF) {
-  const { className, value, minValue } = props;
+  const { className, value, minValue, maxValue } = props;
   const cls = classnames('zw-calendar', className);
   const [time, setTime] = useState('');
   return (
@@ -169,6 +212,7 @@ export function Calendar(props: PropsIF) {
       <MonthPanel
         value={time}
         minValue={minValue}
+        maxValue={maxValue}
         onDateChange={(_e, _date, dateStr) => {
           setTime(dateStr);
         }}
