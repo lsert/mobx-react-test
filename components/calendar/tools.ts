@@ -135,5 +135,5 @@ export function formatDate(date: Date, format: string) {
 }
 
 export function isValidDate(date: Date) {
-  return date.toString().toLowerCase() !== 'invalid date';
+  return date && date.toString().toLowerCase() !== 'invalid date';
 }

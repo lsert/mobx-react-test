@@ -10,10 +10,11 @@ interface PropsIF extends HTMLAttributes<HTMLDivElement> {
 }
 
 interface MonthPanelPropsIF extends HTMLAttributes<HTMLDivElement> {
-  value?: string;
+  value?: string | string[];
   minValue?: string;
   maxValue?: string;
   onDateChange?: (e: MouseEvent<HTMLDivElement>, date: Date, dateStr: string) => void;
+  range: boolean;
 }
 
 const weekList = [
@@ -27,12 +28,24 @@ const weekList = [
 ];
 
 function MonthPanel(props: MonthPanelPropsIF) {
-  const { className, value, onDateChange, minValue, maxValue } = props;
-
+  const { className, value, onDateChange, minValue, maxValue, range } = props;
   // 今天的时间
   const today = new DateCaculate();
-  const dateObj = new DateCaculate(value);
-  const dataValid = isValidDate(dateObj);
+  // 当前已经选择的时间
+  let dateObj: Date[] | Date;
+  if (range) {
+    if (!value) {
+      dateObj = [];
+    } else if (!Array.isArray(value)) {
+      dateObj = [new DateCaculate(value)];
+    } else {
+      const [startV, endV] = value;
+      dateObj = [new DateCaculate(startV), new DateCaculate(endV)];
+    }
+  } else {
+    dateObj = new DateCaculate(value);
+  }
+  const dataValid = Array.isArray(dateObj) ? isValidDate(dateObj[0]) : isValidDate(dateObj);
   const cls = classnames({
     'ls-month-panel': true,
     [`${className}`]: !!className,
@@ -41,7 +54,7 @@ function MonthPanel(props: MonthPanelPropsIF) {
   // 当前月
   const [currentMonthDate, setCurrentMonthDate] = useState(dataValid ? dateObj : today);
   const [hoverRange, setHoverRange] = useState<DateCaculate[]>([]);
-  const monthList = getFullMonthDate(currentMonthDate);
+  const monthList = getFullMonthDate(Array.isArray(currentMonthDate) ? currentMonthDate[0] : currentMonthDate);
   const filledMonthList = fillMonthListWithWeek(monthList).map((item) => {
     return new DateCaculate(item);
   });
@@ -135,11 +148,16 @@ function MonthPanel(props: MonthPanelPropsIF) {
         {
           splitedFillMonthList.map((itemList, index) => {
             return (
-              <div>
+              <div className="week-list">
                 {
                   itemList.map((item, index2) => {
                     const currentDate = item.getDate();
-                    const actived = isSameDay(dateObj, item);
+                    let actived = false;
+                    if (range) {
+                      actived = dateObj.some((c) => isSameDay(item, c));
+                    } else {
+                      actived = isSameDay(dateObj, item);
+                    }
                     const disabled = disabledRange.includes(item);
                     let hovered = false;
                     let hoverEnd = false;
@@ -210,6 +228,7 @@ export function Calendar(props: PropsIF) {
   return (
     <div className={cls}>
       <MonthPanel
+        range
         value={time}
         minValue={minValue}
         maxValue={maxValue}

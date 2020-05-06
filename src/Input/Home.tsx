@@ -54,8 +54,17 @@ export function Home() {
   return useObserver(() => {
     return (
       <div style={{ margin: 50 }}>
-        <Calendar minValue="2020-04-01" maxValue="2020-04-20" />
+        <Calendar minValue="2020-04-01" maxValue="2020-05-20" />
       </div>
     )
   });
+}
+
+const ob = {};
+
+export function Test(props: any) {
+  const ff = useFn(() => {
+
+  });
+  return <div>你好吗</div>
 }
