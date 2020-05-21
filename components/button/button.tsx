@@ -4,7 +4,6 @@ import classnames from 'classnames';
 interface PropsIF extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 }
-
 export function Button(props: PropsIF) {
   const { className, children, ...others } = props;
   const [showWave, setShowWave] = useState(false);
@@ -14,8 +13,6 @@ export function Button(props: PropsIF) {
     'ls-wave': showWave
   })
   const onMouseDown = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    console.log(e.pageX);
-    console.log(e.pageY);
     setShowWave(true);
   }, []);
   return (

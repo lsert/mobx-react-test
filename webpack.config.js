@@ -41,7 +41,8 @@ module.exports = {
               "@babel/preset-react"
             ],
             plugins: [
-              ["transform-class-properties", { "spec": true }]
+              ["transform-class-properties", { "spec": true }],
+              "./obPlugin.js"
             ]
           }
         },
