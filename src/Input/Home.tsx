@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useLocalStore, Observer } from 'mobx-react';
 
-function A() {
-  return <div></div>
+declare module 'mobx-react' {
+  function Observer({ children }: { children: ReactElement | (() => ReactElement<any>) }): JSX.Element;
+}
+
+function A(props: any) {
+  return <React.Fragment>{props.msg}</React.Fragment>
 }
 
 function Homes() {
@@ -12,18 +16,13 @@ function Homes() {
       code: 2,
     }
   });
-  console.log('我不应该运行');
   return (
     <div style={{ margin: 50 }}>
       <Observer>
-        {() => {
-
-        }}
+        <A msg={state.msg} />
       </Observer>
-      <A />
     </div>
   )
 }
 
 export const Home = Homes;
-

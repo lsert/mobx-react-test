@@ -42,7 +42,7 @@ module.exports = {
             ],
             plugins: [
               ["transform-class-properties", { "spec": true }],
-              "./obPlugin.js"
+              ["./obPlugin.js", { tagName: 'Observer' }]
             ]
           }
         },
