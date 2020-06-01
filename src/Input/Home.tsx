@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import { useLocalStore, Observer } from 'mobx-react';
+import DatePicker from '../../components/datePicker';
 
 declare module 'mobx-react' {
   function Observer({ children }: { children: ReactElement | (() => ReactElement<any>) }): JSX.Element;
@@ -19,7 +20,7 @@ function Homes() {
   return (
     <div style={{ margin: 50 }}>
       <Observer>
-        <A msg={state.msg} />
+        <DatePicker range />
       </Observer>
     </div>
   )

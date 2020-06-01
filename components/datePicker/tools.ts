@@ -1,4 +1,4 @@
-export class DateCaculate extends Date {
+export class CaDate extends Date {
   year = this.getFullYear();
   month = this.getMonth() + 1;
   day = this.getDate();
@@ -7,44 +7,45 @@ export class DateCaculate extends Date {
   addYear(number = 1) {
     const { year, month, day, week } = this;
     let newYear = year + number;
-    return new DateCaculate(newYear, month, day);
+    return new CaDate(newYear, month - 1, day);
   }
 
   addMonth(number = 1) {
     const { year, month, day, week } = this;
-    const plusYear = Math.floor(number / 12);
+    const plusYear = Math[number < 0 ? 'ceil' : 'floor'](number / 12);
     const plusMonth = number % 12;
     const newYear = year + plusYear;
     const newMonth = month + plusMonth;
-    return new DateCaculate(newYear, newMonth - 1, day);
+    return new CaDate(newYear, newMonth - 1, day);
   }
 
   addDay(number = 1) {
     const ts = this.getTime();
     let newTs = ts + (number * 86400000);
-    return new DateCaculate(newTs);
+    return new CaDate(newTs);
   }
 
-  isSameDay(date: DateCaculate) {
+  isSameDay(date: CaDate) {
     return this.year === date.year && this.month === date.month && this.day === date.day;
   }
 
-  isNextSiblings(date: DateCaculate) {
+  isNextSiblings(date: CaDate) {
     return this.isSameDay(date.addDay(-1));
   }
-  isPrevSiblings(date: DateCaculate) {
+  isPrevSiblings(date: CaDate) {
     return this.isSameDay(date.addDay());
   }
 }
 
 export function isSameDay(date: Date, date2: Date) {
+  if (!isValidDate(date) || !isValidDate(date2)) return false;
   const year = date.getFullYear();
   const year2 = date2.getFullYear();
   if (year !== year2) {
     return false;
   }
-  const month = date.getMonth() + 1;
-  const month2 = date2.getMonth() + 1;
+  const month = date.getMonth();
+  const month2 = date2.getMonth();
   if (month !== month2) {
     return false;
   }

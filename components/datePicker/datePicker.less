@@ -1,0 +1,107 @@
+.zw-date-picker {
+  box-shadow: 0 2px 8px 0 rgba(216, 216, 216, 1);
+  display: inline-block;
+  font-size: 14px;
+}
+
+.zw-date-panel-header {
+  height: 43px;
+  border-bottom: 1px solid #d8d8d8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  user-select: none;
+
+  .toggle-btn {
+    display: block;
+    font-size: 12px;
+    cursor: pointer;
+    color: #666;
+    width: 20px;
+    height: 100%;
+    line-height: 43px;
+    text-align: center;
+
+    &:hover {
+      color: #00BC70;
+      font-weight: bold;
+    }
+  }
+
+  .current-value-box {
+    text-align: center;
+    width: 60%;
+    .show-selector {
+      display: inline-block;
+      font-weight: bold;
+      margin-left: 10px;
+      cursor: pointer;
+      &:first-child {
+        margin-left: 10;
+      }
+      &:hover{
+        color: #00BC70;
+      }
+    }
+  }
+}
+
+.zw-date-picker-days-box {
+  width: 210px;
+  padding: 10px;
+  text-align: left;
+}
+
+.zw-date-picker-list {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  color: #343434;
+  cursor: pointer;
+
+  &.not-current-month {
+    color: #bcbcbc;
+  }
+  .zw-date-picker-item {
+    height: 24px;
+    width: 24px;
+    margin: 0 auto;
+    line-height: 24px;
+    border-radius: 50%;
+    user-select: none;
+  }
+  &.today {
+    .zw-date-picker-item{
+      border: 1px solid #00BC70;
+      box-sizing: border-box;
+      color: #00BC70;
+    }
+  }
+  &:hover {
+    .zw-date-picker-item{
+      background-color: rgba(0, 188, 112, 0.2)
+    }
+  }
+  &.selected {
+    .zw-date-picker-item {
+      background-color: #00BC70;
+      color: #fff;
+    }
+  }
+  &.range-selected-start {
+    & ~ .zw-date-picker-list {
+      .zw-data-picker-range {
+        background-color: rgba(0, 188, 112, 0.2)
+      }
+    }
+  }
+  &.end-day {
+    & ~ .zw-date-picker-list {
+      .zw-data-picker-range {
+        background: none;
+      }
+    }
+  }
+}
