@@ -37,7 +37,14 @@ export class CaDate extends Date {
   }
 }
 
-export function isSameDay(date: Date, date2: Date) {
+export function isSameDay(date?: Date | number, date2?: Date | number) {
+  if (!date || !date2) return false;
+  if (typeof date === 'number') {
+    date = new Date(date);
+  }
+  if (typeof date2 === 'number') {
+    date2 = new Date(date2);
+  }
   if (!isValidDate(date) || !isValidDate(date2)) return false;
   const year = date.getFullYear();
   const year2 = date2.getFullYear();

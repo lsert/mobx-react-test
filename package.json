@@ -19,6 +19,7 @@
   "homepage": "https://github.com/lsert/mobx-react-test#readme",
   "devDependencies": {
     "@babel/core": "^7.9.0",
+    "@babel/plugin-syntax-top-level-await": "^7.8.3",
     "@babel/plugin-transform-typescript": "^7.9.4",
     "@babel/preset-react": "^7.9.4",
     "@babel/preset-typescript": "^7.9.0",
@@ -36,6 +37,7 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
+    "@types/react-dom": "^16.9.8",
     "classnames": "^2.2.6",
     "mobx": "^5.15.4",
     "mobx-react": "^6.1.8",

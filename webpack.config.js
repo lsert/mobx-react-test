@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -22,6 +23,7 @@ module.exports = {
       }
     }
   },
+  devtool: false,
   module: {
     rules: [
       {
@@ -42,7 +44,8 @@ module.exports = {
             ],
             plugins: [
               ["transform-class-properties", { "spec": true }],
-              ["./obPlugin.js", { tagName: 'Observer' }]
+              ["./obPlugin.js", { tagName: 'Observer' }],
+              '@babel/plugin-syntax-top-level-await',
             ]
           }
         },
@@ -71,4 +74,7 @@ module.exports = {
       filename: 'index.html',
     }),
   ],
+  optimization: {
+    splitChunks: { chunks: 'all' }
+  },
 }

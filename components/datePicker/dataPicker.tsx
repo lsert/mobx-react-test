@@ -5,6 +5,7 @@ import { CaDate, isSameDay } from './tools';
 
 interface PropsIF {
   value: string | Date | number;                   // 支持字符串 日期对象和 时间戳
+  endValue?: CaDate;
   range?: boolean;
 }
 
@@ -13,9 +14,17 @@ interface StateIF {
   today: CaDate;
   currentMonthDate: CaDate;
   itemList: CaDate[];
+  startDay?: CaDate;
+  endDay?: CaDate;
+  endValue?: CaDate;
 }
 
 class DatePicker extends Component<PropsIF, StateIF> {
+
+  static defaultProps = {
+    isEndDate: true,
+  }
+
   static toDateObj = (value: PropsIF['value']) => {
     if (typeof value === 'string') {
       const dateObj = new CaDate(value);
@@ -23,6 +32,8 @@ class DatePicker extends Component<PropsIF, StateIF> {
     }
     return new CaDate();
   }
+
+  rangeSeletedOnce = false;
 
   constructor(props: DatePicker['props']) {
     super(props);
@@ -32,6 +43,8 @@ class DatePicker extends Component<PropsIF, StateIF> {
       today: new CaDate(),
       currentMonthDate: value,
       itemList: this.createDateRange(value),
+      startDay: value,
+      endDay: value,
     }
   }
 
@@ -64,9 +77,9 @@ class DatePicker extends Component<PropsIF, StateIF> {
   }
 
   onDayClick: MouseEventHandler<HTMLLIElement> = (e) => {
-    const { range } = this.props;
+    const { range, isEndDate } = this.props;
     const { currentTarget: { dataset } } = e;
-    const { itemList } = this.state;
+    const { itemList, value } = this.state;
     const { index } = dataset;
     const i = Number(index);
     const item = itemList[i];
@@ -78,9 +91,23 @@ class DatePicker extends Component<PropsIF, StateIF> {
         currentMonthDate: item,
       });
     }
-    this.setState({
-      value: item,
-    });
+    if (range) {
+      if (this.rangeSeletedOnce) {
+        this.setState({
+          endValue: item,
+        });
+      } else {
+        this.setState({
+          value: item,
+          endValue: undefined,
+        });
+      }
+      this.rangeSeletedOnce = !this.rangeSeletedOnce;
+    } else {
+      this.setState({
+        value: item,
+      });
+    }
   }
 
   onMouseEnter: MouseEventHandler<HTMLLIElement> = (e) => {
@@ -91,22 +118,18 @@ class DatePicker extends Component<PropsIF, StateIF> {
       const { index } = dataset;
       const i = Number(index);
       const item = itemList[i];
-      item.isEndDay = true;
-      this.hasEndDay = true;
-      this.forceUpdate();
+      // this.forceUpdate();
     }
   }
   onMouseLeave: MouseEventHandler<HTMLLIElement> = (e) => {
-    const { range, value } = this.props;
+    const { range } = this.props;
     if (range) {
       const { currentTarget: { dataset } } = e;
       const { itemList } = this.state;
       const { index } = dataset;
       const i = Number(index);
       const item = itemList[i];
-      item.isEndDay = false;
-      this.hasEndDay = false;
-      this.forceUpdate();
+      // this.forceUpdate();
     }
   }
 
@@ -154,7 +177,8 @@ class DatePicker extends Component<PropsIF, StateIF> {
   hasEndDay = false;
 
   render() {
-    const { value, itemList, currentMonthDate } = this.state;
+    const { range } = this.props;
+    const { value, itemList, currentMonthDate, endDay, startDay, endValue } = this.state;
     const year = currentMonthDate.getFullYear();
     const month = currentMonthDate.getMonth() + 1;
     return (
@@ -176,13 +200,30 @@ class DatePicker extends Component<PropsIF, StateIF> {
                 const itemMonth = item.getMonth();
                 const currentMonth = currentMonthDate.getMonth();
                 const isToday = isSameDay(new Date(), item);
-                const isSelected = isSameDay(value, item)
+                let isSelected = isSameDay(value, item) || isSameDay(endValue, item);
+                let min;
+                let max;
+                if (range) {
+                  if (value && endValue) {
+                    let tsv = value.getTime();
+                    let tsev = endValue.getTime();
+                    if (tsev < tsv) {
+                      min = tsev;
+                      max = tsv;
+                    } else {
+                      min = tsv;
+                      max = tsev;
+                    }
+                  }
+                }
                 const cls = classnames('zw-date-picker-list', {
                   'not-current-month': currentMonth !== itemMonth,
                   'today': isToday,
                   'selected': isSelected,
-                  'end-day': !!item.isEndDay,
+                  'start-date': isSameDay(item, min),
+                  'end-date': isSameDay(item, max),
                   'range-selected-start': isSelected && !!this.hasEndDay,
+                  'range-middle': (min && max && !this.rangeSeletedOnce) ? item.getTime() >= min && item.getTime() <= max : false
                 });
                 return (
                   <li

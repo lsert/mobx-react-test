@@ -32,15 +32,18 @@
   .current-value-box {
     text-align: center;
     width: 60%;
+
     .show-selector {
       display: inline-block;
       font-weight: bold;
       margin-left: 10px;
       cursor: pointer;
+
       &:first-child {
         margin-left: 10;
       }
-      &:hover{
+
+      &:hover {
         color: #00BC70;
       }
     }
@@ -60,11 +63,31 @@
   text-align: center;
   color: #343434;
   cursor: pointer;
+  vertical-align: middle;
+
+  &:nth-child(7n+1) {
+    &.range-middle {
+      .zw-data-picker-range {
+        border-radius: 24px 0 0 24px;
+      }
+    }
+  }
+
+  &:nth-child(7n) {
+    &.range-middle {
+      .zw-data-picker-range {
+        border-radius: 0 24px 24px 0;
+      }
+    }
+  }
 
   &.not-current-month {
     color: #bcbcbc;
   }
+
   .zw-date-picker-item {
+    position: relative;
+    z-index: 2;
     height: 24px;
     width: 24px;
     margin: 0 auto;
@@ -72,31 +95,65 @@
     border-radius: 50%;
     user-select: none;
   }
+
   &.today {
-    .zw-date-picker-item{
+    .zw-date-picker-item {
       border: 1px solid #00BC70;
       box-sizing: border-box;
       color: #00BC70;
     }
   }
+
   &:hover {
-    .zw-date-picker-item{
-      background-color: rgba(0, 188, 112, 0.2)
+    .zw-date-picker-item {
+      background-color: rgba(0, 188, 112, 0.2);
     }
   }
+
+
+  &.range-middle {
+    &.zw-date-picker-list {
+      .zw-data-picker-range {
+        background-color: rgba(0, 188, 112, 0.2)
+      }
+    }
+  }
+
   &.selected {
     .zw-date-picker-item {
       background-color: #00BC70;
       color: #fff;
     }
   }
-  &.range-selected-start {
-    & ~ .zw-date-picker-list {
-      .zw-data-picker-range {
-        background-color: rgba(0, 188, 112, 0.2)
+
+  &.selected.start-date.range-middle,
+  &.selected.end-date.range-middle {
+    .zw-data-picker-range {
+      background: none;
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        width: 50%;
+        top: 0;
+        height: 100%;
+        z-index: 1;
+        background-color: rgba(0, 188, 112, 0.2);
       }
     }
   }
+
+  &.selected.end-date.range-middle {
+    .zw-data-picker-range {
+
+      &::after {
+        left: 0;
+      }
+    }
+  }
+
   &.end-day {
     & ~ .zw-date-picker-list {
       .zw-data-picker-range {
